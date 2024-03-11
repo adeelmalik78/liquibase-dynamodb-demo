@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns:dynamodb-pro="http://www.liquibase.org/xml/ns/pro-dynamodb"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd
+        http://www.liquibase.org/xml/ns/pro-dynamodb
+        http://www.liquibase.org/xml/ns/pro-dynamodb/liquibase-pro-dynamodb-latest.xsd">
+        
+    <changeSet id="1" author="as" labels="example-label" context="example-context" failOnError="true">
+        <dynamodb-pro:createDynamoTable tableName="Music" billingMode="PROVISIONED" deletionProtectionEnabled="false"
+                                  tableClass="STANDARD">
+            <dynamodb-pro:keySchema hashAttributeName="Artist" rangeAttributeName="SongTitle"/>
+            <dynamodb-pro:attributeDefinitions>
+                <dynamodb-pro:attributeDefinition attributeName="Artist" attributeType="S"/>
+                <dynamodb-pro:attributeDefinition attributeName="SongTitle" attributeType="S"/>
+                <dynamodb-pro:attributeDefinition attributeName="AlbumTitle" attributeType="S"/>
+            </dynamodb-pro:attributeDefinitions>
+            <dynamodb-pro:provisionedThroughput readCapacityUnits="10" writeCapacityUnits="10"/>
+            <dynamodb-pro:localSecondaryIndexes>
+                <dynamodb-pro:localSecondaryIndex indexName="secondaryIndex">
+                    <dynamodb-pro:keySchema hashAttributeName="Artist" rangeAttributeName="AlbumTitle"/>
+                    <dynamodb-pro:projection projectionType="INCLUDE">
+                        <dynamodb-pro:nonKeyAttributes attributeName="SongTitle"/>
+                    </dynamodb-pro:projection>
+                </dynamodb-pro:localSecondaryIndex>
+            </dynamodb-pro:localSecondaryIndexes>
+            <dynamodb-pro:globalSecondaryIndexes>
+                <dynamodb-pro:globalSecondaryIndex indexName="globalIndex">
+                    <dynamodb-pro:keySchema hashAttributeName="Artist" rangeAttributeName="AlbumTitle"/>
+                    <dynamodb-pro:projection projectionType="INCLUDE">
+                        <dynamodb-pro:nonKeyAttributes attributeName="SongTitle"/>
+                    </dynamodb-pro:projection>
+                    <dynamodb-pro:provisionedThroughput readCapacityUnits="12" writeCapacityUnits="12"/>
+                </dynamodb-pro:globalSecondaryIndex>
+            </dynamodb-pro:globalSecondaryIndexes>
+            <dynamodb-pro:streamSpecification streamEnabled="true" streamViewType="NEW_IMAGE"/>
+            <dynamodb-pro:sseSpecification enabled="true" sseType="KMS"/>
+            <dynamodb-pro:tags>
+                <dynamodb-pro:tag key="tagKey1" value="tagValue1"/>
+                <dynamodb-pro:tag key="tagKey2" value="tagValue2"/>
+            </dynamodb-pro:tags>
+        </dynamodb-pro:createDynamoTable>
+        <rollback>
+            <dynamodb-pro:deleteDynamoTable tableName="Music"/>
+        </rollback>
+    </changeSet>
+    <changeSet id="1.1" author="fl">
+        <dynamodb-pro:updateTableProvisionedThroughput tableName="Music" readCapacityUnits="20" writeCapacityUnits="20" />
+        <rollback/>
+    </changeSet>
+    <changeSet id="2" author="as" labels="test">
+        <dynamodb-pro:createDynamoTable tableName="Restaurants">
+        <dynamodb-pro:keySchema hashAttributeName="Restaurant" rangeAttributeName="TastiestItem"/>
+            <dynamodb-pro:attributeDefinitions>
+                <dynamodb-pro:attributeDefinition attributeName="Restaurant" attributeType="S"/>
+                <dynamodb-pro:attributeDefinition attributeName="TastiestItem" attributeType="S"/>
+            </dynamodb-pro:attributeDefinitions>
+            <dynamodb-pro:provisionedThroughput readCapacityUnits="10" writeCapacityUnits="10"/>
+        </dynamodb-pro:createDynamoTable>
+        <rollback>
+            <dynamodb-pro:deleteDynamoTable tableName="Restaurants"/>
+        </rollback>
+    </changeSet>
+    <changeSet id="3" author="as">
+        <comment>test_comment</comment>
+        <sql>INSERT INTO "Music" value {'Artist' : 'Acme Band','SongTitle' : 'PartiQL Rocks'}</sql>
+        <rollback>
+            <sql>DELETE FROM Music WHERE Artist='Acme Band' AND SongTitle='PartiQL Rocks'</sql>
+        </rollback>
+    </changeSet>
+    <changeSet id="3" author="vm">
+        <comment>test_collisions_for_the_same_id</comment>
+        <sql>INSERT INTO "Music" value {'Artist' : 'Tartak','SongTitle' : 'Не кажучи нікому'}</sql>
+        <rollback>
+            <sql>DELETE FROM Music WHERE Artist='Tartak' AND SongTitle='Не кажучи нікому'</sql>
+        </rollback>
+    </changeSet>
+    <changeSet id="4" author="as">
+        <dynamodb-pro:partiqlFile path="test.sql" relativeToChangelogFile="true" splitStatements="true"/>
+        <rollback>
+            <dynamodb-pro:partiqlFile path="test-rollback.sql" relativeToChangelogFile="true"/>
+        </rollback>
+    </changeSet>
+    <changeSet id="5" author="as">
+        <dynamodb-pro:partiql>INSERT INTO Music value {'Artist' : 'Steve Jablonsky','SongTitle' : 'Arrival to Earth'}</dynamodb-pro:partiql>
+        <rollback>
+            <dynamodb-pro:partiql>DELETE FROM Music WHERE Artist='Steve Jablonsky' AND SongTitle='Arrival to Earth'</dynamodb-pro:partiql>
+        </rollback>
+    </changeSet>
+</databaseChangeLog>

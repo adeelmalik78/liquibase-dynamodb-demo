@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns:dynamodb-pro="http://www.liquibase.org/xml/ns/pro-dynamodb"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog  http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd
+                http://www.liquibase.org/xml/ns/pro-dynamodb http://www.liquibase.org/xml/ns/pro-dynamodb/liquibase-pro-dynamodb-latest.xsd">
+    <changeSet id="1" author="v" labels="table1">
+        <dynamodb-pro:createDynamoTable tableName="UpdateMusicXML" billingMode="PAY_PER_REQUEST" tableClass="STANDARD">
+            <dynamodb-pro:keySchema hashAttributeName="Artist" rangeAttributeName="SongTitle" />
+            <dynamodb-pro:attributeDefinitions>
+                <dynamodb-pro:attributeDefinition attributeName="Artist" attributeType="S"/>
+                <dynamodb-pro:attributeDefinition attributeName="SongTitle" attributeType="S"/>
+            </dynamodb-pro:attributeDefinitions>
+            <dynamodb-pro:streamSpecification streamEnabled="false" />
+            <dynamodb-pro:sseSpecification enabled="false" />
+        </dynamodb-pro:createDynamoTable>
+        <rollback>
+            <dynamodb-pro:deleteDynamoTable tableName="UpdateMusicXML"/>
+        </rollback>
+    </changeSet>
+    <changeSet id="2" author="v">
+        <dynamodb-pro:updateDynamoTable tableName="UpdateMusicXML" tableClass="STANDARD_INFREQUENT_ACCESS" />
+         <rollback>
+            empty
+        </rollback>       
+    </changeSet>
+    <changeSet id="3" author="v">
+        <dynamodb-pro:updateDynamoTable tableName="UpdateMusicXML" billingMode="PROVISIONED">
+            <dynamodb-pro:provisionedThroughput readCapacityUnits="5" writeCapacityUnits="5"/>
+        </dynamodb-pro:updateDynamoTable>
+         <rollback>
+            empty
+        </rollback> 
+    </changeSet>
+    <changeSet id="4" author="v">
+        <dynamodb-pro:updateDynamoTable tableName="UpdateMusicXML" deletionProtectionEnabled="true"/>
+        <rollback>
+            <dynamodb-pro:updateDynamoTable tableName="UpdateMusicXML" deletionProtectionEnabled="false"/>
+        </rollback>
+    </changeSet>
+    <changeSet id="5" author="v" labels="table1">
+        <dynamodb-pro:updateDynamoTable tableName="UpdateMusicXML">
+            <dynamodb-pro:streamSpecification streamEnabled="true" streamViewType="NEW_IMAGE" />
+        </dynamodb-pro:updateDynamoTable>
+         <rollback>
+            empty
+        </rollback> 
+    </changeSet>
+    <changeSet id="6" author="v" >
+        <dynamodb-pro:updateDynamoTable tableName="UpdateMusicXML">
+            <dynamodb-pro:sseSpecification enabled="true" sseType="KMS"/>
+        </dynamodb-pro:updateDynamoTable>
+         <rollback>
+            empty
+        </rollback> 
+    </changeSet>
+    <changeSet id="7" author="v">
+        <dynamodb-pro:updateDynamoTable tableName="UpdateMusicXML" deletionProtectionEnabled="false"/>
+        <rollback>
+            <dynamodb-pro:updateDynamoTable tableName="UpdateMusicXML" deletionProtectionEnabled="false"/>
+        </rollback>
+    </changeSet>
+</databaseChangeLog>

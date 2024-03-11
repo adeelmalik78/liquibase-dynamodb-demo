@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xmlns:dynamodb="http://www.liquibase.org/xml/ns/pro-dynamodb"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog  http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd
+                http://www.liquibase.org/xml/ns/pro-dynamodb http://www.liquibase.org/xml/ns/pro-dynamodb/liquibase-pro-dynamodb-latest.xsd">
+    <changeSet id="1" author="fl">
+        <dynamodb:createDynamoTable tableName="Music3XML" billingMode="PROVISIONED" tableClass="STANDARD" deletionProtectionEnabled="false">
+            <dynamodb:keySchema hashAttributeName="Artist" rangeAttributeName="SongTitle"/>
+            <dynamodb:attributeDefinitions>
+                <dynamodb:attributeDefinition attributeName="Artist" attributeType="S"/>
+                <dynamodb:attributeDefinition attributeName="SongTitle" attributeType="S"/>
+                <dynamodb:attributeDefinition attributeName="Album" attributeType="N"/>
+            </dynamodb:attributeDefinitions>
+            <dynamodb:provisionedThroughput readCapacityUnits="5" writeCapacityUnits="5"/>
+            <dynamodb:localSecondaryIndexes>
+                <dynamodb:localSecondaryIndex indexName="localSecondaryIndex">
+                    <dynamodb:keySchema hashAttributeName="Artist" rangeAttributeName="Album"/>
+                    <dynamodb:projection projectionType="INCLUDE">
+                        <dynamodb:nonKeyAttributes attributeName="SongTitle"/>
+                    </dynamodb:projection>
+                </dynamodb:localSecondaryIndex>
+            </dynamodb:localSecondaryIndexes>
+            <dynamodb:globalSecondaryIndexes>
+                <dynamodb:globalSecondaryIndex indexName="SongTitleGlobalIndex">
+                    <dynamodb:keySchema hashAttributeName="Artist" rangeAttributeName="SongTitle"/>
+                    <dynamodb:projection projectionType="INCLUDE">
+                        <dynamodb:nonKeyAttributes attributeName="Album"/>
+                    </dynamodb:projection>
+                    <dynamodb:provisionedThroughput readCapacityUnits="5" writeCapacityUnits="5"/>
+                </dynamodb:globalSecondaryIndex>
+            </dynamodb:globalSecondaryIndexes>
+            <dynamodb:tags>
+                <dynamodb:tag key="tag" value="tagValue"/>
+                <dynamodb:tag key="tag2" value="tagValue2"/>
+            </dynamodb:tags>
+            <dynamodb:streamSpecification streamEnabled="true" streamViewType="NEW_IMAGE"/>
+            <dynamodb:sseSpecification enabled="true" sseType="KMS"/>
+        </dynamodb:createDynamoTable>
+        <rollback>
+            <dynamodb:deleteDynamoTable tableName="Music3XML"/>
+        </rollback>
+    </changeSet>
+</databaseChangeLog>
