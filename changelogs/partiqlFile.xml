@@ -1,0 +1,33 @@
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:dynamodb-pro="http://www.liquibase.org/xml/ns/pro-dynamodb"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd
+    http://www.liquibase.org/xml/ns/pro-dynamodb
+    http://www.liquibase.org/xml/ns/pro-dynamodb/liquibase-pro-dynamodb-latest.xsd">
+
+    <changeSet id="1" author="your.name">
+        <dynamodb-pro:createDynamoTable tableName="MusicPartiqlFileTest">
+            <dynamodb-pro:keySchema hashAttributeName="Artist" rangeAttributeName="SongTitle"/>
+            <dynamodb-pro:attributeDefinitions>
+                <dynamodb-pro:attributeDefinition attributeName="Artist" attributeType="S"/>
+                <dynamodb-pro:attributeDefinition attributeName="SongTitle" attributeType="S"/>
+            </dynamodb-pro:attributeDefinitions>
+            <dynamodb-pro:provisionedThroughput readCapacityUnits="10" writeCapacityUnits="10"/>
+        </dynamodb-pro:createDynamoTable>
+
+        <rollback>
+            <dynamodb-pro:deleteDynamoTable tableName="MusicPartiqlFileTest"/>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="2" author="your.name">
+        <dynamodb-pro:partiqlFile path="changelogs/test.partiql" splitStatements="true" endDelimiter="@@"/>
+
+        <rollback>
+            <dynamodb-pro:partiqlFile path="changelogs/test-rollback.partiql" splitStatements="true" endDelimiter="@@"/>
+        </rollback>
+    </changeSet>
+
+</databaseChangeLog>

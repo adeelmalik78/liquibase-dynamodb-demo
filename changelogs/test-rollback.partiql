@@ -1,0 +1,1 @@
+DELETE FROM MusicPartiqlFileTest WHERE Artist='Taras Chubay' AND SongTitle='Вона' @@ DELETE FROM MusicPartiqlFileTest WHERE Artist='Alan Walker' AND SongTitle='Faded'

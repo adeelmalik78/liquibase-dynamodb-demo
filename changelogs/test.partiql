@@ -1,0 +1,1 @@
+INSERT INTO MusicPartiqlFileTest value {'Artist' : 'Taras Chubay','SongTitle' : 'Вона'} @@ INSERT INTO MusicPartiqlFileTest value {'Artist' : 'Alan Walker','SongTitle' : 'Faded'}

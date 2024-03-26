@@ -1,0 +1,38 @@
+<databaseChangeLog
+    xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xmlns:dynamodb-pro="http://www.liquibase.org/xml/ns/pro-dynamodb"
+    xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+    http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd
+    http://www.liquibase.org/xml/ns/pro-dynamodb
+    http://www.liquibase.org/xml/ns/pro-dynamodb/liquibase-pro-dynamodb-latest.xsd">
+
+    <changeSet id="1" author="your.name">
+        <dynamodb-pro:createDynamoTable tableName="MusicPartiqlTestXML">
+            <dynamodb-pro:keySchema hashAttributeName="Artist" rangeAttributeName="SongTitle"/>
+            <dynamodb-pro:attributeDefinitions>
+                <dynamodb-pro:attributeDefinition attributeName="Artist" attributeType="S"/>
+                <dynamodb-pro:attributeDefinition attributeName="SongTitle" attributeType="S"/>
+            </dynamodb-pro:attributeDefinitions>
+            <dynamodb-pro:provisionedThroughput readCapacityUnits="10" writeCapacityUnits="10"/>
+        </dynamodb-pro:createDynamoTable>
+
+        <rollback>
+            <dynamodb-pro:deleteDynamoTable tableName="MusicPartiqlTestXML"/>
+        </rollback>
+    </changeSet>
+
+    <changeSet id="2" author="your.name">
+        <comment>partiql with splitStatements and endDelimiter test</comment>
+        <dynamodb-pro:partiql splitStatements="true" endDelimiter="@@">
+            INSERT INTO MusicPartiqlTestXML value {'Artist' : '3 Doors Down','SongTitle' : 'Kryptonite'}@@ INSERT INTO MusicPartiqlTestXML value {'Artist' : 'Mike Oldfield','SongTitle' : 'Man in the Rain'}
+        </dynamodb-pro:partiql>
+
+        <rollback>
+            <dynamodb-pro:partiql splitStatements="true" endDelimiter="@@">
+                DELETE FROM MusicPartiqlTestXML WHERE Artist='3 Doors Down' AND SongTitle='Kryptonite'@@ DELETE FROM MusicPartiqlTestXML WHERE Artist='Mike Oldfield' AND SongTitle='Man in the Rain'
+            </dynamodb-pro:partiql>
+        </rollback>
+    </changeSet>
+
+</databaseChangeLog>

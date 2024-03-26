@@ -1,0 +1,37 @@
+databaseChangeLog:
+  - changeSet:
+      id: 1
+      author: your.name
+      changes:
+        - createDynamoTable:
+            tableName: MusicPartiqlFileTest
+            keySchema:
+              hashAttributeName: Artist
+              rangeAttributeName: SongTitle
+            attributeDefinitions:
+              - attributeDefinition:
+                  attributeName: Artist
+                  attributeType: S
+              - attributeDefinition:
+                  attributeName: SongTitle
+                  attributeType: S
+            provisionedThroughput:
+              readCapacityUnits: 10
+              writeCapacityUnits: 10
+      rollback:
+        deleteDynamoTable:
+          tableName: MusicPartiqlFileTest
+
+  - changeSet:
+      id: 2
+      author: your.name
+      changes:
+        - partiqlFile:
+            path: "changelogs/test.partiql"
+            splitStatements: true
+            endDelimiter: "@@"
+        - rollback:
+            partiqlFile:
+              path: "changelogs/test-rollback.partiql"
+              splitStatements: true
+              endDelimiter: "@@"

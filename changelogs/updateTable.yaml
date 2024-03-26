@@ -1,0 +1,31 @@
+databaseChangeLog:
+
+  - changeSet:
+      id: 2
+      author: docs
+      changes:
+        - updateDynamoTable:
+            tableName: Music3YAML
+            billingMode: PAY_PER_REQUEST
+      rollback:
+        updateDynamoTable:
+          tableName: Music3YAML
+          billingMode: PROVISIONED
+          provisionedThroughput:
+            readCapacityUnits: 5
+            writeCapacityUnits: 5
+
+  - changeSet:
+      id: 3
+      author: docs
+      changes:
+        - updateDynamoTable:
+            tableName: Music3YAML
+            streamSpecification:
+              streamEnabled: true
+              streamViewType: NEW_IMAGE
+      rollback:
+        updateDynamoTable:
+            tableName: Music3YAML
+            streamSpecification:
+              streamEnabled: false

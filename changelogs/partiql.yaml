@@ -1,0 +1,38 @@
+databaseChangeLog:
+  - changeSet:
+      id: 1
+      author: your.name
+      changes:
+        - createDynamoTable:
+            tableName: MusicPartiqlTestYAML
+            keySchema:
+              hashAttributeName: Artist
+              rangeAttributeName: SongTitle
+            attributeDefinitions:
+              - attributeDefinition:
+                  attributeName: Artist
+                  attributeType: S
+              - attributeDefinition:
+                  attributeName: SongTitle
+                  attributeType: S
+            provisionedThroughput:
+              readCapacityUnits: 10
+              writeCapacityUnits: 10
+      rollback:
+        deleteDynamoTable:
+          tableName: MusicPartiqlTestYAML
+
+  - changeSet:
+      id: 2
+      author: your.name
+      comment: partiql with splitStatements and endDelimiter test
+      changes:
+        - partiql:
+            splitStatements: true
+            endDelimiter: "@@"
+            partiql: "INSERT INTO MusicPartiqlTestYAML value {'Artist' : '3 Doors Down','SongTitle' : 'Kryptonite'}@@ INSERT INTO MusicPartiqlTestYAML value {'Artist' : 'Mike Oldfield','SongTitle' : 'Man in the Rain'}"
+        - rollback:
+            partiql:
+              splitStatements: true
+              endDelimiter: "@@"
+              partiql: "DELETE FROM MusicPartiqlTestYAML WHERE Artist='3 Doors Down' AND SongTitle='Kryptonite'@@ DELETE FROM MusicPartiqlTestYAML WHERE Artist='Mike Oldfield' AND SongTitle='Man in the Rain'"

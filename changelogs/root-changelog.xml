@@ -6,8 +6,23 @@
         xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog  http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd
                 http://www.liquibase.org/xml/ns/pro-dynamodb http://www.liquibase.org/xml/ns/pro-dynamodb/liquibase-pro-dynamodb-latest.xsd">
 
-    <include file="changelogs/foundational.xml" />
-    <include file="changelogs/createTable.xml" />
-    <include file="changelogs/updateTable.xml" />
+    <!-- <include file="changelogs/createTable.xml" /> -->
+    <!-- <include file="changelogs/createTable.yaml" />
+    <include file="changelogs/createTable.json" /> -->
+    
+    <!-- <include file="changelogs/updateTable.xml" /> -->
+
+    <!-- <include file="changelogs/deleteTable.xml" /> -->
+
+    <!-- <include file="changelogs/foundational.xml" /> -->
+    <!-- <include file="changelogs/updateTable_orig.xml" /> -->
+
+    <!-- <include file="changelogs/partiql.xml" />
+    <include file="changelogs/partiql.yaml" />
+    <include file="changelogs/partiql.json" /> -->
+
+    <!-- <include file="changelogs/partiqlFile.xml" /> -->
+    <include file="changelogs/partiqlFile.yaml" />
+    <!-- <include file="changelogs/partiqlFile.json" /> -->
 
 </databaseChangeLog>
