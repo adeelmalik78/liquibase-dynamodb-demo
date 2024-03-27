@@ -1,0 +1,29 @@
+
+stages:
+  Status:
+    actions:
+      - type: liquibase
+        command: status
+        cmdArgs: {}
+
+
+  Quality Checks:
+    actions:
+      - type: liquibase
+        command: checks run
+        cmdArgs:
+          { checks-scope: "changelog",
+            checks-settings-file: "liquibase.checks-settings.conf"
+          }
+
+  DB_Update:
+    actions:
+      - type: liquibase
+        command: update
+        cmdArgs: { }
+
+endStage:
+  actions:
+    - type: liquibase
+      command: history
+      cmdArgs: {}
