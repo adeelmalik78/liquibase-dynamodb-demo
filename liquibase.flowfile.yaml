@@ -1,4 +1,3 @@
-
 stages:
   Status:
     actions:
@@ -13,7 +12,8 @@ stages:
         command: checks run
         cmdArgs:
           { checks-scope: "changelog",
-            checks-settings-file: "liquibase.checks-settings.conf"
+            checks-settings-file: "liquibase.checks-settings.conf",
+            auto-update: "on"
           }
 
   DB_Update:

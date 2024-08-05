@@ -21,8 +21,8 @@
     <include file="changelogs/partiql.yaml" />
     <include file="changelogs/partiql.json" /> -->
 
-    <!-- <include file="changelogs/partiqlFile.xml" /> -->
-    <include file="changelogs/partiqlFile.yaml" />
+    <include file="changelogs/partiqlFile.xml" />
+    <!-- <include file="changelogs/partiqlFile.yaml" /> -->
     <!-- <include file="changelogs/partiqlFile.json" /> -->
 
 </databaseChangeLog>
